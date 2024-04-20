@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+def profile_page(request):
+    user = get_object_or_404(User, user=request.user)
+    comments = user.commenter.all()
+
 STATUS = ((0, "Draft"), (1, "Published"))
 
 # Create your models here.
@@ -35,4 +39,21 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment {self.body} by {self.author}"    
+
+    class About(models.Model): title = models.CharField(max_length=200)
+    updated_on = models.DateTimeField(auto_now=True)
+    content = models.TextField()
+
+    def __str__(self):
+        return self.title
+
+
+class CollaborateRequest(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    message = models.TextField()
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Collaboration request from {self.name}"    
 
